@@ -1,33 +1,33 @@
-const { embedColor, rejectColor } = require("../config.json");
+const { embedColor, rejectColor } = require('../config.json');
 const {
   SlashCommandBuilder,
   PermissionFlagsBits,
   EmbedBuilder,
-} = require("discord.js");
-const ms = require("ms");
-const { writeFileSync } = require("fs");
+} = require('discord.js');
+const ms = require('ms');
+const { saveRolesCache } = require('../helpers')
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("addrole")
-    .setDescription("Add a role for the bot to disable pinging.")
+    .setName('addrole')
+    .setDescription('Add a role for the bot to disable pinging.')
     .setDefaultMemberPermissions(
       PermissionFlagsBits.ManageRoles && PermissionFlagsBits.ManageGuild,
     )
     .addRoleOption((option) =>
       option
-        .setName("role")
-        .setDescription("The role you want to add.")
+        .setName('role')
+        .setDescription('The role you want to add.')
         .setRequired(true),
     )
     .addStringOption((option) =>
       option
-        .setName("timeout")
-        .setDescription("The timout to disable the role pinging. DEFAULT: 1h"),
+        .setName('timeout')
+        .setDescription('The timout to disable the role pinging. DEFAULT: 1h'),
     ),
   async execute(interaction, args) {
     const role = args.role;
-    const timeoutInput = ms(args.timeout ?? "1h");
+    const timeoutInput = ms(args.timeout ?? '1h');
 
     const newRole = {
       timeout: timeoutInput,
@@ -51,7 +51,7 @@ module.exports = {
 
     if (inRoles) {
       embed
-        .setTitle(`Wait a second...`)
+        .setTitle('Wait a second...')
         .setDescription(
           `<@&${role}> is already in the registry!\nIf you want to modify the timeout, use the \`/updaterole\` command.\n\nCurrent setting for <@&${roleInfo.roleId}> is ${ms(roleInfo.timeout, { long: true })}`,
         )
@@ -68,7 +68,7 @@ module.exports = {
 
     if (theRole.comparePositionTo(botRole) > 0) {
       embed
-        .setTitle("Cannot add role!")
+        .setTitle('Cannot add role!')
         .setDescription(
           `I cannot modify <@&${role}>!\nIn order for me to be able to modify this role, you must put my role [<@&${botRole.id}>] higher than <@&${role}>.`,
         )
@@ -80,7 +80,7 @@ module.exports = {
 
     if (!theRole.mentionable) {
       embed
-        .setTitle("Role not emntionable!")
+        .setTitle('Role not emntionable!')
         .setDescription(
           `The role <@&${role}> is not mentionable! Please set it to be mentionable before calling this command!`,
         )
@@ -94,15 +94,15 @@ module.exports = {
     saveRolesCache(interaction.client.roles);
 
     embed
-      .setTitle("Role added!")
+      .setTitle('Role added!')
       .addFields(
         {
-          name: "> Role:",
+          name: '> Role:',
           value: `<@&${role}>`,
           inline: false,
         },
         {
-          name: "> Timeout:",
+          name: '> Timeout:',
           value: `${ms(timeoutInput, { long: true })}`,
           inline: true,
         },
@@ -113,13 +113,3 @@ module.exports = {
     interaction.reply({ embeds: [embed] });
   },
 };
-
-function saveRolesCache(roles) {
-  writeFileSync(
-    "./commands/roles.json",
-    JSON.stringify(roles, undefined, 4),
-    (err) => {
-      if (err) console.error(err);
-    },
-  );
-}

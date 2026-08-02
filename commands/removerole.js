@@ -1,22 +1,22 @@
-const { embedColor, rejectColor } = require("../config.json");
+const { embedColor, rejectColor } = require('../config.json');
 const {
   SlashCommandBuilder,
   PermissionFlagsBits,
   EmbedBuilder,
-} = require("discord.js");
-const { writeFileSync } = require("fs");
+} = require('discord.js');
+const { saveRolesCache } = require('../helpers')
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("removerole")
-    .setDescription("Remove a role for the bot enable pinging.")
+    .setName('removerole')
+    .setDescription('Remove a role for the bot enable pinging.')
     .setDefaultMemberPermissions(
       PermissionFlagsBits.ManageRoles && PermissionFlagsBits.ManageGuild,
     )
     .addRoleOption((option) =>
       option
-        .setName("role")
-        .setDescription("The role you want to remove.")
+        .setName('role')
+        .setDescription('The role you want to remove.')
         .setRequired(true),
     ),
   async execute(interaction, args) {
@@ -35,7 +35,7 @@ module.exports = {
 
     if (!inRoles) {
       embed
-        .setTitle("Role Not in Registry!")
+        .setTitle('Role Not in Registry!')
         .setDescription(
           `The role <@&${role}> was not in the registry.\nDid you choose the wrong role?`,
         )
@@ -52,9 +52,9 @@ module.exports = {
     if (!guildRole.mentionable) guildRole.setMentionable(true);
 
     embed
-      .setTitle("Role removed!")
+      .setTitle('Role removed!')
       .addFields({
-        name: "> Role:",
+        name: '> Role:',
         value: `<@&${role}>`,
         inline: false,
       })
@@ -64,13 +64,3 @@ module.exports = {
     interaction.reply({ embeds: [embed] });
   },
 };
-
-function saveRolesCache(roles) {
-  writeFileSync(
-    "./commands/roles.json",
-    JSON.stringify(roles, undefined, 4),
-    (err) => {
-      if (err) console.error(err);
-    },
-  );
-}

@@ -1,40 +1,40 @@
-const { embedColor, rejectColor } = require("../config.json");
+const { embedColor, rejectColor } = require('../config.json');
 const {
   SlashCommandBuilder,
   PermissionFlagsBits,
   EmbedBuilder,
-} = require("discord.js");
-const ms = require("ms");
-const { writeFileSync } = require("fs");
+} = require('discord.js');
+const ms = require('ms');
+const { saveRolesCache } = require('../helpers')
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("updaterole")
-    .setDescription("Update an existing role in the registry.")
+    .setName('updaterole')
+    .setDescription('Update an existing role in the registry.')
     .setDefaultMemberPermissions(
       PermissionFlagsBits.ManageRoles && PermissionFlagsBits.ManageGuild,
     )
     .addRoleOption((option) =>
       option
-        .setName("role")
-        .setDescription("The role you want to update.")
+        .setName('role')
+        .setDescription('The role you want to update.')
         .setRequired(true),
     )
     .addStringOption((option) =>
       option
-        .setName("timeout")
-        .setDescription("The new timout length. DEFAULT: 1h")
+        .setName('timeout')
+        .setDescription('The new timout length. DEFAULT: 1h')
         .setRequired(true),
     ),
   execute(interaction, args) {
     const role = args.role;
     const timeout = args.timeout;
-    let noChange = false;
-    let oldTimeout = ms("1h");
-    let newTimeout = ms("1h");
-    let inRoles = false;
-    let theRole = {};
-    let index = 0;
+    const noChange = false;
+    const oldTimeout = ms('1h');
+    const newTimeout = ms('1h');
+    const inRoles = false;
+    const theRole = {};
+    const index = 0;
 
     for (const blob of interaction.client.roles) {
       if (blob.roleId === role) {
@@ -49,7 +49,7 @@ module.exports = {
 
     if (!inRoles) {
       embed
-        .setTitle("Role Not in Registry!")
+        .setTitle('Role Not in Registry!')
         .setDescription(
           `The role <@&${role}> was not in the registry.\nDid you choose the wrong role?`,
         )
@@ -73,37 +73,37 @@ module.exports = {
 
     if (!noChange) {
       embed
-        .setTitle("Role updated!")
+        .setTitle('Role updated!')
         .setDescription(`The timeout info for <@&${role}> has been updated.`)
         .addFields([
           {
-            name: "> Role",
+            name: '> Role',
             value: `<@&${role}>`,
             inline: false,
           },
           {
-            name: "> Old Timeout",
+            name: '> Old Timeout',
             value: `${ms(oldTimeout, { long: true })}`,
             inline: true,
           },
           {
-            name: "> New Timeout",
+            name: '> New Timeout',
             value: `${ms(newTimeout, { long: true })}`,
             inline: true,
           },
         ]);
     } else {
       embed
-        .setTitle("No change to role!")
+        .setTitle('No change to role!')
         .setDescription(`No change for <@&${role}>.`)
         .addFields([
           {
-            name: "> Role",
+            name: '> Role',
             value: `<@&${role}>`,
             inline: false,
           },
           {
-            name: "> Timeout",
+            name: '> Timeout',
             value: `${ms(oldTimeout, { long: true })}`,
             inline: false,
           },
@@ -112,13 +112,3 @@ module.exports = {
     interaction.reply({ embeds: [embed] });
   },
 };
-
-function saveRolesCache(roles) {
-  writeFileSync(
-    "./commands/roles.json",
-    JSON.stringify(roles, undefined, 4),
-    (err) => {
-      if (err) console.error(err);
-    },
-  );
-}

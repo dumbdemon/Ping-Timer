@@ -1,15 +1,12 @@
 const {
   Client,
-  PermissionFlagsBits,
   Collection,
   GatewayIntentBits,
   Partials,
-  EmbedBuilder,
-} = require("discord.js");
-const { token, activities, rejectColor, ownerId } = require("./config.json");
-const { writeFileSync, readdirSync } = require("fs");
-const ms = require("ms");
-const { join } = require("path");
+} = require('discord.js');
+const { token } = require('./config.json');
+const { readdirSync } = require('node:fs');
+const { join } = require('node:path');
 
 const client = new Client({
   intents: [
@@ -25,12 +22,12 @@ const client = new Client({
   ],
 });
 
-client.roles = require("./commands/roles.json") ?? [];
+client.roles = require('./commands/roles.json') ?? [];
 client.startTime = Date.now();
 client.commands = new Collection();
-const commandsPath = join(__dirname, "commands");
+const commandsPath = join(__dirname, 'commands');
 const commandFiles = readdirSync(commandsPath).filter((file) =>
-  file.endsWith("js"),
+  file.endsWith('.js'),
 );
 
 for (const file of commandFiles) {
@@ -40,133 +37,23 @@ for (const file of commandFiles) {
   client.commands.set(command.data.name, command);
 }
 
-client.on("ready", () => {
-  console.log(`${client.user.tag} is online!`);
+const eventPath = join(__dirname, 'events');
+const eventFiles = readdirSync(eventPaths).filter((file) =>
+   file.endsWith('.js'),
+);
 
-  setBotActivity(client.user);
-
-  client.roles.forEach((i) => {
-    setTimeout(() => {
-      if (i.underTimeout) {
-        client.guilds.fetch(i.guildId).then((guild) => {
-          if (guild.available) {
-            guild.roles.fetch(i.roleId).then((role) => {
-              if (!role.mentionable) {
-                role.setMentionable(true);
-                i.underTimeout = false;
-                saveRolesCache();
-                console.log(`Role with ID [${i.roleId}] has been reset.`);
-              }
-            });
-          } else console.log(`${guild.name} [${guild.id}] is not available!`);
-        });
-      }
-    }, ms("2s"));
-  });
-
-  setInterval(() => setBotActivity(client.user), 300000);
-});
-
-client.on("messageCreate", (message) => {
-  if (message.author === client.user || message.author.bot) return;
-
-  const roleMentions = message.mentions.roles;
-
-  if (!message.member.permissions.has(PermissionFlagsBits.MentionEveryone)) {
-    roleMentions.forEach((i) => {
-      client.roles.forEach((j) => {
-        if (i.id === j.roleId) {
-          if (!j.underTimeout) {
-            j.underTimeout = true;
-            saveRolesCache();
-            startPingTimeout(i);
-          }
-        }
-      });
-    });
-  }
-});
-
-client.on("interactionCreate", async (interaction) => {
-  if (!interaction.isChatInputCommand()) return;
-
-  const command = client.commands.get(interaction.commandName);
-  const args = [];
-
-  if (!command) return;
-
-  for (const option of interaction.options.data) {
-    if (option.value) args[option.name] = option.value;
-  }
-
-  const embed = new EmbedBuilder()
-    .setTitle("Command failed to execute!")
-    .setDescription(
-      `There was an error while executing this command!\nLet <@${ownerId}> know which command and **all** arguements used!`,
-    )
-    .setColor(rejectColor)
-    .setTimestamp();
-
-  try {
-    await command.execute(interaction, args);
-  } catch (err) {
-    console.error(err);
-    await interaction.reply({ embeds: [embed], ephemeral: true });
-  }
-});
-
-client.on("roleDelete", (role) => {
-  client.roles.forEach((i) => {
-    if (i.roleId === role.id) {
-      client.roles.splice(i, 1);
-      saveRolesCache();
-
-      console.log(
-        `[${role.name}] was deleted on the server [${role.guild.id}]; therefore, it has been deleted from the registry.`,
-      );
-    }
-  });
-});
-
-client.on("error", (error) => {
-  console.error(error);
-});
-
-function startPingTimeout(role) {
-  try {
-    role.setMentionable(false);
-    console.log(`${role.name} was mentioned.\nStarting timeout...`);
-
-    client.roles.forEach((i) => {
-      if (role.id === i.roleId) {
-        setTimeout(() => {
-          role.setMentionable(true);
-          i.underTimeout = false;
-          saveRolesCache();
-          console.log(
-            `Timeout comepleted after ${ms(i.timeout, { long: true })}.`,
-          );
-        }, i.timeout);
-      }
-    });
-  } catch {
-    console.log("Unable to start ping timeout!");
+for (const file of eventFiles) {
+  const filePath = join(eventPath, file);
+  const event = require(filePath);
+  if (event.once) {
+     client.once(event.name, (...args) => event.execute(...args));
+  } else {
+    client.on(event.name, (...args) => event.execute(...args));
   }
 }
 
-function setBotActivity(clientUser) {
-  const i = Math.floor(Math.random() * activities.length);
-  clientUser.setActivity(activities[i].text, { type: activities[i].type });
-}
-
-function saveRolesCache() {
-  writeFileSync(
-    "./commands/roles.json",
-    JSON.stringify(client.roles, undefined, 4),
-    (err) => {
-      if (err) console.error(err);
-    },
-  );
-}
+client.on('debug', console.log)
+      .on('warn', console.log)
+      .on('error', console.error);
 
 client.login(token);
