@@ -38,16 +38,17 @@ for (const file of commandFiles) {
 }
 
 const eventPath = join(__dirname, 'events');
-const eventFiles = readdirSync(eventPaths).filter((file) =>
-   file.endsWith('.js'),
+const eventFiles = readdirSync(eventPath).filter((file) =>
+  file.endsWith('.js'),
 );
 
 for (const file of eventFiles) {
   const filePath = join(eventPath, file);
   const event = require(filePath);
   if (event.once) {
-     client.once(event.name, (...args) => event.execute(...args));
-  } else {
+    client.once(event.name, (...args) => event.execute(...args));
+  }
+  else {
     client.on(event.name, (...args) => event.execute(...args));
   }
 }

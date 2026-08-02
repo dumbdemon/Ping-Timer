@@ -1,8 +1,9 @@
 const { activities } = require('discord.js');
 const { writeFileSync } = require('node:fs');
 const { uptime } = require('process');
+const ms = require('ms');
 
-function saveRolesCache(roles) {
+helpers.saveRolesCache = function (roles) {
   writeFileSync(
     './commands/roles.json',
     JSON.stringify(roles, undefined, 4),
@@ -12,13 +13,13 @@ function saveRolesCache(roles) {
   );
 }
 
-function setBotActivity(clientUser) {
+helpers.setBotActivity = function (clientUser) {
   const i = Math.floor(Math.random() * activities.length);
   clientUser.setActivity(activities[i].text, { type: activities[i].type });
 }
 
 
-function startPingTimeout(role) {
+helpers.startPingTimeout = function (client, role) {
   try {
     role.setMentionable(false);
     console.log(`${role.name} was mentioned.\nStarting timeout...`);
@@ -28,20 +29,21 @@ function startPingTimeout(role) {
         setTimeout(() => {
           role.setMentionable(true);
           i.underTimeout = false;
-          saveRolesCache();
+          saveRolesCache(client.roles);
           console.log(
             `Timeout comepleted after ${ms(i.timeout, { long: true })}.`,
           );
         }, i.timeout);
       }
     });
-  } catch {
+  }
+  catch {
     console.log('Unable to start ping timeout!');
   }
 }
 
 
-function formatUptime() {
+helpers.formatUptime = function () {
   let totalSeconds = Math.floor(uptime() / 1000);
   const days = Math.floor(totalSeconds / 86400);
   totalSeconds %= 86400;

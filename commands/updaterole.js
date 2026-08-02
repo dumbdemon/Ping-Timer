@@ -5,7 +5,7 @@ const {
   EmbedBuilder,
 } = require('discord.js');
 const ms = require('ms');
-const { saveRolesCache } = require('../helpers')
+const { saveRolesCache } = require('../helpers');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -29,12 +29,12 @@ module.exports = {
   execute(interaction, args) {
     const role = args.role;
     const timeout = args.timeout;
-    const noChange = false;
-    const oldTimeout = ms('1h');
-    const newTimeout = ms('1h');
-    const inRoles = false;
-    const theRole = {};
-    const index = 0;
+    var noChange = false;
+    var oldTimeout = ms('1h');
+    var newTimeout = ms('1h');
+    var inRoles = false;
+    var theRole = {};
+    var index = 0;
 
     for (const blob of interaction.client.roles) {
       if (blob.roleId === role) {
@@ -66,7 +66,8 @@ module.exports = {
       newTimeout = theRole.timeout;
       interaction.client.roles[index] = theRole;
       saveRolesCache(interaction.client.roles);
-    } else {
+    }
+    else {
       oldTimeout = theRole.timeout;
       noChange = true;
     }
@@ -92,7 +93,8 @@ module.exports = {
             inline: true,
           },
         ]);
-    } else {
+    }
+    else {
       embed
         .setTitle('No change to role!')
         .setDescription(`No change for <@&${role}>.`)

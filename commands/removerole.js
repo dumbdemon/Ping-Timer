@@ -4,7 +4,7 @@ const {
   PermissionFlagsBits,
   EmbedBuilder,
 } = require('discord.js');
-const { saveRolesCache } = require('../helpers')
+const { saveRolesCache } = require('../helpers');
 
 module.exports = {
   data: new SlashCommandBuilder()

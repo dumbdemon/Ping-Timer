@@ -5,14 +5,14 @@ const {
   memberDeny,
 } = require('../config.json');
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { saveRolesCache } = require('../helpers')
+const { saveRolesCache } = require('../helpers');
 const ms = require('ms');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('shutdown')
     .setDescription('Shutdown the bot.'),
-  execute(interaction, _args) {
+  execute(interaction, args) {
     const embed = new EmbedBuilder();
     if (interaction.user.id !== ownerId) {
       embed.setImage(memberDeny).setTimestamp().setColor(rejectColor);
