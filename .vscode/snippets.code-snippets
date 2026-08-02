@@ -5,6 +5,7 @@
           "const { embedColor, rejectColor } = require(\"../config.json\");",
           "const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require(\"discord.js\");",
           "",
+          "/* exported args */",
           "module.exports = {",
           "\tdata: new SlashCommandBuilder()",
           "\t\t.setName(\"\")",

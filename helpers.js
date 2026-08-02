@@ -1,9 +1,14 @@
-const { activities } = require('discord.js');
+const { ClientUser, Role } = require('discord.js');
 const { writeFileSync } = require('node:fs');
 const { uptime } = require('process');
+const { activities } = require('config.json')
 const ms = require('ms');
 
-helpers.saveRolesCache = function (roles) {
+/**
+ * Saves the current roles to file.
+ * @param {*[]} roles 
+ */
+let saveRolesCache = function(roles) {
   writeFileSync(
     './commands/roles.json',
     JSON.stringify(roles, undefined, 4),
@@ -11,15 +16,23 @@ helpers.saveRolesCache = function (roles) {
       if (err) console.error(err);
     },
   );
-}
+};
 
-helpers.setBotActivity = function (clientUser) {
+/**
+ * Sets the bot activity.
+ * @param {ClientUser} clientUser 
+ */
+let setBotActivity = function(clientUser) {
   const i = Math.floor(Math.random() * activities.length);
   clientUser.setActivity(activities[i].text, { type: activities[i].type });
-}
+};
 
-
-helpers.startPingTimeout = function (client, role) {
+/**
+ * Starts a timeout for the mentioned role.
+ * @param {ClientUser} client 
+ * @param {Role} role 
+ */
+let startPingTimeout = function(client, role) {
   try {
     role.setMentionable(false);
     console.log(`${role.name} was mentioned.\nStarting timeout...`);
@@ -40,10 +53,10 @@ helpers.startPingTimeout = function (client, role) {
   catch {
     console.log('Unable to start ping timeout!');
   }
-}
+};
 
 
-helpers.formatUptime = function () {
+let formatUptime = function() {
   let totalSeconds = Math.floor(uptime() / 1000);
   const days = Math.floor(totalSeconds / 86400);
   totalSeconds %= 86400;
@@ -59,7 +72,7 @@ helpers.formatUptime = function () {
   uptimeString += `${seconds} seconds`;
 
   return uptimeString;
-}
+};
 
 
 module.exports = { saveRolesCache, setBotActivity, startPingTimeout, formatUptime };

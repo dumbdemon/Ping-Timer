@@ -6,6 +6,7 @@ const {
 } = require('discord.js');
 const { saveRolesCache } = require('../helpers');
 
+/* exported args */
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('removerole')

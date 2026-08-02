@@ -3,6 +3,7 @@ const { formatUptime } = require('../helpers');
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { version } = require('../package.json');
 
+/* exported args */
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('about')

@@ -8,6 +8,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { saveRolesCache } = require('../helpers');
 const ms = require('ms');
 
+/* exported args */
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('shutdown')

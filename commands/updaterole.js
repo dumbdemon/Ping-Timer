@@ -7,6 +7,7 @@ const {
 const ms = require('ms');
 const { saveRolesCache } = require('../helpers');
 
+/* exported args */
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('updaterole')
@@ -29,12 +30,12 @@ module.exports = {
   execute(interaction, args) {
     const role = args.role;
     const timeout = args.timeout;
-    var noChange = false;
-    var oldTimeout = ms('1h');
-    var newTimeout = ms('1h');
-    var inRoles = false;
-    var theRole = {};
-    var index = 0;
+    let noChange = false;
+    let oldTimeout = ms('1h');
+    let newTimeout = ms('1h');
+    let inRoles = false;
+    let theRole = {};
+    let index = 0;
 
     for (const blob of interaction.client.roles) {
       if (blob.roleId === role) {
