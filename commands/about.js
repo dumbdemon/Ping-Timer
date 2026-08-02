@@ -1,14 +1,15 @@
+/*eslint no-unused-vars: ["error", { "varsIgnorePattern": "_args" }]*/
+
 const { embedColor, aboutText } = require('../config.json');
 const { formatUptime } = require('../helpers');
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { version } = require('../package.json');
 
-/* exported args */
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('about')
     .setDescription('What is P3 Timer?'),
-  execute(interaction, args) {
+  execute(interaction, _args) {
     const i = interaction.client.roles.length;
 
     const embed = new EmbedBuilder()

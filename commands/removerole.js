@@ -1,3 +1,5 @@
+/*eslint no-unused-vars: ["error", { "varsIgnorePattern": "_args" }]*/
+
 const { embedColor, rejectColor } = require('../config.json');
 const {
   SlashCommandBuilder,
@@ -6,7 +8,6 @@ const {
 } = require('discord.js');
 const { saveRolesCache } = require('../helpers');
 
-/* exported args */
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('removerole')

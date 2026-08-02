@@ -2,6 +2,8 @@
     "commands": {
         "prefix": "",
         "body": [
+          "/*eslint no-unused-vars: [\"error\", { \"varsIgnorePattern\": \"_args\" }]*/",
+          "",
           "const { embedColor, rejectColor } = require(\"../config.json\");",
           "const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require(\"discord.js\");",
           "",

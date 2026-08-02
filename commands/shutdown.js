@@ -1,3 +1,5 @@
+/*eslint no-unused-vars: ["error", { "varsIgnorePattern": "_args" }]*/
+
 const {
   embedColor,
   rejectColor,
@@ -8,12 +10,11 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { saveRolesCache } = require('../helpers');
 const ms = require('ms');
 
-/* exported args */
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('shutdown')
     .setDescription('Shutdown the bot.'),
-  execute(interaction, args) {
+  execute(interaction, _args) {
     const embed = new EmbedBuilder();
     if (interaction.user.id !== ownerId) {
       embed.setImage(memberDeny).setTimestamp().setColor(rejectColor);
