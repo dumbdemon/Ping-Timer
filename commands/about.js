@@ -1,4 +1,4 @@
-/*eslint no-unused-vars: ["error", { "varsIgnorePattern": "_args" }]*/
+/*  eslint no-unused-vars: ["error", { "varsIgnorePattern": "_args" }]  */
 
 const { embedColor, aboutText } = require('../config.json');
 const { formatUptime } = require('../helpers');

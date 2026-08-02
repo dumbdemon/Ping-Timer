@@ -48,6 +48,7 @@ module.exports = [
 			'space-unary-ops': 'error',
 			'spaced-comment': 'error',
 			yoda: 'error',
+			'jsdoc/no-undefined-types': 1,
 		},
 	},
 ];
