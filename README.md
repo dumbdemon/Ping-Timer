@@ -1,7 +1,6 @@
 <!-- markdownlint-configure-file { "html": { "allowed_elements": [ "br" ] } }-->
 # Ping Timer
 
-[![CodeFactor](https://www.codefactor.io/repository/github/dumbdemon/ping-timer/badge)](https://www.codefactor.io/repository/github/dumbdemon/ping-timer)
 [![DeepSource](https://deepsource.io/gh/dumbdemon/Ping-Timer.svg/?label=active+issues&show_trend=true&token=wCbVyvvFZfepVo6gCXHGCj2x)](https://deepsource.io/gh/dumbdemon/Ping-Timer/?ref=repository-badge)
 
 A bot that disables role pinging when they are mentioned!<br>
